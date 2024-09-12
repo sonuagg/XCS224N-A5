@@ -67,7 +67,7 @@ class Test_1c(GradedTestCase):
     for (x, y), entry in zip(self.dataset, self.data.split("\n")):
         x_unpad = [c.item() for c in x if c >= 2] # remove padding and mask chars
         l = len(x_unpad)
-        if l < 4 or l > int(50*7/8):
+        if l < 4 or l > int(50*3/4):
             invalid_len = True
 
         len_fracs.append(l / len(entry))
