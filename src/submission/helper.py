@@ -55,7 +55,7 @@ def finetune(reading_params_path, finetune_corpus_path, pretrain_dataset, block_
     ###         num_workers=0
     ###
     ###
-    ### Note: Please use torch.load(reading_params_path, map_location=torch.device('cpu')) to load pretrained model 
+    ### Note: Please use torch.load(reading_params_path, map_location=torch.device('cpu'), weights_only=True) to load pretrained model 
 
     trainer_obj = None #Trainer object (see trainer.py for more details)
     tconf = None #TrainerConfig object (see trainer.py for more details)
