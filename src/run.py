@@ -11,7 +11,7 @@ Options:
     --no-compile                            do not compile the model
     --backend=<str>                         backend to be used for compilation [default: inductor] {inductor,aot_eager,cudagraphs}
     --function=<function>                   Whether to 'pretrain', 'finetune' or 'evaluate' a model
-    --variant=<attention-model>             Which variant of the model to run ('vanilla', 'perceiver')
+    --variant=<attention-model>             Which variant of the model to run ('vanilla', 'rope')
     --pretrain_corpus_path=<file>           Path of the corpus to pretrain on
     --writing_params_path=<file>            Path to save the model after pretraining/finetuning
     --reading_params_path=<file>            If specified, path of the model to load before finetuning/evaluation
@@ -23,6 +23,7 @@ Options:
     --pretrain_lr=<value>                   pretraining lr [default: 6e-3]
     --finetune_lr=<value>                   finetuning lr [default: 6e-4]
 """
+import sys
 from docopt import docopt
 from datetime import datetime
 import torch
@@ -46,16 +47,16 @@ except ImportError:
 
 from submission import (
     GPT, GPTConfig, CharCorruptionDataset, NameDataset, TrainerConfig, Trainer, 
-    evaluate_places, sample, initialize_vanilla_model, initialize_perceiver_model,
+    evaluate_places, sample, initialize_vanilla_model, initialize_rope_model,
     finetune, pretrain, train
 )
 
 def create_model(args, mconf):
     if args['--variant'] == 'vanilla':
         return initialize_vanilla_model(mconf)
-    elif args['--variant'] == 'perceiver':
+    elif args['--variant'] == 'rope':
         bottleneck_dim = int(args["--bottleneck_dim"])
-        return initialize_perceiver_model(mconf, bottleneck_dim)
+        return initialize_rope_model(mconf, bottleneck_dim)
     else:
         print("Invalid --variant")
         assert False
@@ -117,7 +118,7 @@ def main():
     pretrain_dataset = CharCorruptionDataset(text, block_size)
 
     # We don't suggest you change these hyperparameters, as they're known to work.
-    # use them for both the vanilla and the perceiver models
+    # use them for both the vanilla and the rope models
     mconf = GPTConfig(pretrain_dataset.vocab_size, pretrain_dataset.block_size,
         n_layer=4, n_head=8, n_embd=256)
 

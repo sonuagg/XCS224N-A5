@@ -1,10 +1,11 @@
 \begin{framed}
 \noindent
  \textbf{Note.} Here are some things to keep in mind as you plan your time for this assignment.
+
 \begin{itemize}
-   \item The total amount of pytorch code to write, and code complexity, of this assignment is lower than Assignment 4. 
+   \item The total amount of PyTorch code to write, and code complexity, of this assignment is lower than Assignment 4. 
          However, you're also given less guidance or scaffolding in how to write the code.
-         \item  This assignment involves a pretraining step that takes approximately 2 hours to perform on Azure, and you'll have to do it twice.
+         \item  This assignment involves a pretraining step that takes approximately 1 hour to perform on Azure, and you'll have to do it twice. The 1 hour timeline is an upper bound on the training time assuming older/slower GPU. On faster GPUs, the pretraining can finish in around 30-40 minutes.
 \end{itemize}
 \end{framed}
 This assignment is an investigation into Transformer self-attention building blocks, and the effects of pretraining.
@@ -21,7 +22,7 @@ You'll find that models are able to learn some facts about where people were bor
 Then, you'll take a harder look at the system you built, and reason about the implications and concerns about relying on such implicit pretrained knowledge.
 
 \item \textbf{Mathematical exploration:}  What kinds of operations can self-attention easily implement? Why should we use fancier things like multi-headed self-attention?
-This section will use some mathematical investigations to illuminate a few of the motivations of self-attention and Transformer networks.
+This section will use some mathematical investigations to illuminate a few of the motivations of self-attention and Transformer networks. {\color{red} \textbf{Note:} for all questions, you should justify your answer with mathematical reasoning when required.}
 
 %\begin{enumerate}
 %\item \textbf{Trying out the existing code (\mingpt):}

@@ -44,11 +44,11 @@ You'll find that this enables models to perform considerably above chance on a h
 
 The code you're provided with is a fork of Andrej Karpathy's \href{https://github.com/karpathy/minGPT}{\mingpt}.
 It's nicer than most research code in that it's relatively simple and transparent.
-The ``GPT'' in \mingpt refers to the Transformer language model of OpenAI, originally described in \href{https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf}{this paper} \footnote{\url{https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf}}.
+The ``GPT'' in \mingpt refers to the Transformer language model of OpenAI, originally described in \href{https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf}{this paper} \footnote{\url{https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf}}.
 
 %Your overall goal is to repurpose this codebase with its Jupyter notebook for language modeling to build a small \textit{Text-to-text-transfer-transformer} (or, \textsc{T5})-style encoder-decoder model, 
 
-As in previous assignments, you will want to develop on your machine locally, then run training on Azure. You can use the same conda environment from previous assignments for local development, and the same process for training on Azure (see the \textit{Practical Guide for Using the VM} section of the \href{https://docs.google.com/document/d/10J520Vnb1LnAMo0qgSYpG5cEEbomqQ371NIqg1IAv-4/edit?usp=sharing}{XCS224N Azure Guide} for a refresher). You might find the troubleshooting section useful if you see any issue in conda environment and GPU usage. Specifically, you'll still be running ``\texttt{conda activate XCS224N\_CUDA}'' on the Azure machine. You'll need around 5 hours for training, so budget your time accordingly!
+As in previous assignments, you will want to develop on your machine locally, then run training on Azure. You can use the same conda environment from previous assignments for local development, and the same process for training on Azure (see the \textit{Practical Guide for Using the VM} section of the \href{https://docs.google.com/document/d/10J520Vnb1LnAMo0qgSYpG5cEEbomqQ371NIqg1IAv-4/edit?usp=sharing}{XCS224N Azure Guide} for a refresher). You might find the troubleshooting section useful if you see any issue in conda environment and GPU usage. Specifically, you'll still be running ``\texttt{conda activate XCS224N\_CUDA}'' on the Azure machine. You'll need around 2 hours for training, so budget your time accordingly!
 
 Your work with this codebase is as follows:
 
@@ -60,8 +60,8 @@ Your work with this codebase is as follows:
 
 \textit{Note that you do not have to write any code or submit written answers for this part.}
 
-In  the \texttt{src/submission/mingpt-demo/} folder, there is a Jupyter notebook (\texttt{play\_char.ipynb}) that trains and samples from a Transformer language model.
-Take a look at it locally on your computer and you might need to install Jupyter notebootk \texttt{pip install jupyter} or use vscode \footnote{\url{https://code.visualstudio.com/docs/datascience/jupyter-notebooks}} to get somewhat familiar with the code how it defines and trains models. \textit{You don't need to run the train locally, because training will take long time on CPU only local environment.}
+In the \texttt{src/submission/mingpt-demo/} folder, there is a Jupyter notebook (\texttt{play\_char.ipynb}) that trains and samples from a Transformer language model.
+Take a look at it locally on your computer and you might need to install Jupyter notebootk \texttt{pip install jupyter} or use vscode \footnote{\url{https://code.visualstudio.com/docs/datascience/jupyter-notebooks}} to get somewhat familiar with the code how it defines and trains models. \textit{You don't need to run the train locally, because training will take long time on CPU on your local environment.}
 Some of the code you are writing below will be inspired by what you see in this notebook.
 
 %If you want to run it, you'll need
@@ -123,7 +123,7 @@ Take a look at \texttt{src/submission/helper.py}, which is used by \texttt{src/r
 
 It has some skeleton code you will implement to \textit{pretrain}, \textit{finetune} or \textit{evaluate} a model. For now, we'll focus on the finetuning function, in the case without pretraining.
 
-Taking inspiration from the training code in the \texttt{src/submission/mingpt-demo/play\_char.ipynb} jupyter notebook file, write code to finetune a Transformer model on the name/birth place dataset, via examples from the \texttt{NameDataset} class. For now, implement the case without pretraining (i.e. create a model from scratch and train it on the birth-place prediction task from part (b)). You'll have to modify three sections, marked \texttt{[part c]} in the code: one to initialize the model, one to finetune it, and one to train it. Note that you only need to initialize the model in the case labeled ``vanilla'' for now (later in section (g), we will explore a model variant).
+Taking inspiration from the training code in the \texttt{src/submission/mingpt-demo/play\_char.ipynb} jupyter notebook file, write code to finetune a Transformer model on the name/birth place dataset, via examples from the \texttt{NameDataset} class. For now, implement the case without pretraining (i.e. create a model from scratch and train it on the birth-place prediction task from part (b)). You'll have to modify three sections, marked \texttt{[part d]} in the code: one to initialize the model, one to finetune it, and one to train it. Note that you only need to initialize the model in the case labeled ``vanilla'' for now (later in section (g), we will explore a model variant).
 Use the hyperparameters for the \texttt{Trainer} specified in the \texttt{src/submission/helper.py} code.
 
 Also take a look at the \textit{evaluation} code which has been implemented for you. It samples predictions from the trained model and calls \texttt{evaluate\_places()} to get the total percentage of correct place predictions. You will run this code in part (d) to evaluate your trained models.
@@ -139,6 +139,8 @@ Also take a look at the \textit{evaluation} code which has been implemented for 
 \item \points{1e}  \textbf{Make predictions (without pretraining).}\label{part_predictions_nopretraining}\\ 
 Train your model on \texttt{birth\_places\_train.tsv}, and evaluate on \texttt{birth\_dev.tsv} and \texttt{birth\_test.tsv}. Specifically, you should now be able to run the following three commands:
 \begin{lstlisting}[language=bash]
+cd src
+
 # Train on the names dataset
 ./run.sh vanilla_finetune_without_pretrain
         
@@ -157,12 +159,14 @@ Don't be surprised if the evaluation result is well below 10\%; we will be diggi
 %We've provided, in \texttt{utils.py}, the function \texttt{evaluate\_places}, which we'll use to compare your predicted birth places to the true ones.
 
 %\part[10]
-\item \points{1f} \textbf{Pretrain, finetune, and make predictions. Budget 2 hours for training.}\\
+\item \points{1f} \textbf{Pretrain, finetune, and make predictions. Budget 1 hour for training.}\\
 Now fill in the \textit{pretrain} portion of \texttt{src/submission/helper.py}, which will pretrain a model on the span corruption task. Additionally, modify your \textit{finetune} portion to handle finetuning in the case \textit{with} pretraining. In particular, if a path to a pretrained model is provided in the bash command, load this model before finetuning it on the birth-place prediction task.
 % to read from the parameters trained during pretraining, if a path to those parameters
-Pretrain your model on \texttt{wiki.txt} (which should take approximately two hours), finetune it on \texttt{NameDataset} and evaluate it. Specifically, you should be able to run the following four commands:
+Pretrain your model on \texttt{wiki.txt} (which should take approximately one hour), finetune it on \texttt{NameDataset} and evaluate it. Specifically, you should be able to run the following four commands:
 
 \begin{lstlisting}[language=bash]
+cd src
+
 # Pretrain the model
 ./run.sh vanilla_pretrain
         
@@ -181,81 +185,100 @@ We expect the dev accuracy will be at least 10\%, and will expect a similar accu
 \pagebreak % :0 bad LaTeX form but I'm doing it --John
 
 % \part[10]
-\item \points{1g} \textbf{Research! Write and try out a more efficient variant of Attention (Budget 2 hours for pretraining!)}\\
+\item \points{1g} \textbf{Different kind of position embeddings}\\
 
-We'll now go to changing the Transformer architecture itself -- specifically the first and last transformer blocks.
-The transformer model uses a self-attention scoring function based on dot products, this involves a rather intensive computation that's quadratic in the sequence length. This is because the dot product between $\ell^2$ pairs of word vectors is computed in each computation, where $\ell$ is the sequence length. If we can reduce the length of the sequence passed on the self-attention module, we should observe significant reduction in compute. For example, if we develop a technique that can reduce the sequence length to half, we can save around 75\% of the compute time!
+In the previous part, you used the vanilla Transformer model, which used learned positional embeddings. In Section \ref{sec:pos_enc}, you also learned about the sinusoidal positional embeddings used in the original Transformer paper. In this part, you'll implement a different kind of positional embedding, called \href{https://arxiv.org/abs/2104.09864}{\textit{RoPE} (Rotary Positional Embedding)}\footnote{\url{https://arxiv.org/abs/2104.09864}}.
 
-\href{https://arxiv.org/abs/2202.07765}{PerceiverAR} \footnote{\url{https://arxiv.org/abs/2202.07765}} proposes a solution to make the model more efficient by reducing the sequence length of the input to self-attention for the intermediate layers. In the first layer, the input sequence is projected onto a lower-dimensional basis. Subsequently, all self-attention layers operate in this smaller subspace. The last layer projects the output back to the original input sequence length. In this assignment, we propose a simpler version of the PerceiverAR transformer model.
+RoPE is a fixed positional embedding that is designed to encode relative position rather than absolute position. The issue with absolute positions is that if the transformer won't perform well on context lengths (e.g. 1000) much larger than it was trained on (e.g. 128), because the distribution of the position embeddings will be very different from the ones it was trained on. Relative position embeddings like RoPE alleviate this issue.
 
-\begin{figure}[h]
-\centering
-\captionsetup{justification=centering}
-\includegraphics[height=0.6\linewidth]{images/decoder.pdf}
-\caption{Illustration of the transformer block.}
-\label{fig:tranformer_block}
-\end{figure}
+Given a feature vector with two features $x^{(1)}_t$ and $x^{(2)}_t$ at position $t$ in the sequence, the RoPE positional embedding is defined as:
+\begin{align*}
+    \text{RoPE}(x^{(1)}_t, x^{(2)}_t, t) = \begin{pmatrix} \cos t\theta & -\sin t\theta \\ \sin t\theta  & \cos t\theta \end{pmatrix} \begin{pmatrix} x^{(1)}_t \\ x^{(2)}_t \end{pmatrix}
+\end{align*}
+where $\theta$ is a fixed angle. For two features, the RoPE operation corresponds to a 2D rotation of the features by an angle $t\theta$. Note that the angle is a function of the position $t$.
 
-The provided \texttt{CausalSelfAttention} layer implements the following attention for each head of the multi-headed attention: Let $X\in \mathbb{R}^{\ell \times d}$ (where $\ell$ is the block size and $d$ is the total dimensionality, $d/h$ is the dimensionality per head.).\footnote{Note that these dimensionalities do not include the minibatch dimension.}
-
-Let $Q_i,K_i,V_i \in \mathbb{R}^{d\times d/h}$.
-Then the output of the self-attention head is 
-\begin{equation} \label{qkv_eqn}
-Y_i = \text{softmax}\bigg(\frac{(XQ_i)(XK_i)^\top}{\sqrt{d/h}}\bigg)(XV_i)
-\end{equation}
-where $Y_i\in\mathbb{R}^{\ell \times d/h}$.
-Then the output of the self-attention is a linear transformation of the concatenation of the heads:
-\begin{equation}
-Y = [Y_1;\dots;Y_h]A
-\end{equation}
-where $A \in\mathbb{R}^{d\times d}$ and $[Y_1;\dots;Y_h]\in\mathbb{R}^{\ell \times d}$.
-The code also includes dropout layers which we haven't written here.
-We suggest looking at the provided code and noting how this equation is implemented in PyTorch.
-% \AK{TO-DO: Add description of the Block structure.}
-
-Our model uses this self-attention layer in the transformer block as shown in Figure~\ref{fig:tranformer_block}. As discussed in the lecture, the transformer block contains residual connections and layer normalization layers. If we compare this diagram with the \texttt{Block} code provided in \texttt{model.py}, we notice that the implementation does not perform layer normalization on the output of the MLP (Feed-Forward), but on the input of the \texttt{Block}. This can be considered equivalent since we have a series of transformer blocks on top of each other. 
-
-In the Perceiver model architecture, we replace the first transformer \texttt{Block} in the model with the \texttt{DownProjectBlock}. This block reduces the length of the sequence from $\ell$ to $m$. This is followed by a series of regular transformer blocks, which would now perform self-attention on the reduced sequence length of $m$. We replace the last block of the model with the \texttt{UpProjectBlock}, which takes in the $m$ length output of the previous block, and projects it back to the original sequence length of $\ell$.
-
-You need to implement the \texttt{DownProjectBlock} in \texttt{model.py} that reduces the dimensionality of the sequence in the first block. To do this, perform cross-attention on the input sequence with a learnable basis $C \in \mathbb{R}^{m \times d}$ as the query, where $m < \ell$. Consequently, Equation~\ref{qkv_eqn} becomes: 
-
-\begin{equation}\label{eqn:down_proj_attn}
-Y_i^{(1)} = \text{softmax}\bigg(\frac{(CQ_i)(XK_i)^\top}{\sqrt{d/h}}\bigg)(XV_i)    
-\end{equation}
-
-resulting in $Y_i^{(1)} \in\mathbb{R}^{m\times d/h}$, with $^{(1)}$ denoting that the output corresponds to the first layer. With this dimensionality reduction, the subsequent \texttt{CausalSelfAttention} layers operate on inputs $\in \mathbb{R}^{m\times d}$ instead of $\mathbb{R}^{l\times d}$. We refer to $m$ as the \texttt{bottleneck\_dim} in code. Note that for implementing Equation~\ref{eqn:down_proj_attn}, we need to perform cross attention between the learnable basis $C$ and the input sequence. This has been provided to you as the \texttt{CausalCrossAttention} layer. We recommend reading through \texttt{attention.py} to understand how to use the cross-attention layer, and map which arguments correspond to the key, value and query inputs. Initialize the basis vector matrix $C$ using Xavier Uniform initialization.
-
-To get back to the original dimensions, the last block in the model is replaced with the \texttt{UpProjectBlock}. This block will bring back the output sequence length to be the same as input sequence length  by performing cross-attention on the previous layer's output $Y^{L-1}$ with the original input vector $X$ as the query:
-
-\begin{equation}\label{eqn:up_proj_attn}
-Y_i^{(L)} = \text{softmax}\bigg(\frac{(XQ_i)(Y^{(L-1)}K_i)^\top}{\sqrt{d/h}}\bigg)(Y^{(L-1)}V_i)
-\end{equation}
-where $L$ is the total number of layers. This results in the final output vector having the same dimension as expected in the original \texttt{CausalSelfAttention} mechanism. Implement this functionality in the \texttt{UpProjectBlock} in \texttt{src/submission/model.py}.
-
-We provide the code to assemble the model using your implemented \texttt{DownProjectBlock} and \texttt{UpProjectBlock}. The model uses these blocks when the \texttt{variant} parameter is specified as \texttt{perceiver}.
+For a $d$ dimensional feature, RoPE is applied to each pair of features with an angle $\theta_i$ defined as $\theta_i = 10000^{-2(i-1)/d},\ i \in \{1, 2, \ldots, d/2\}$.
+\begin{align}
+    \label{eq:rope_matrix}
+    \begin{pmatrix}
+    \cos t\theta_1 & -\sin t\theta_1 & 0 & 0 & \cdots & 0 & 0\\
+    \sin t\theta_1 & \cos t\theta_1 & 0 & 0 & \cdots & 0 & 0\\
+    0 & 0 & \cos t\theta_2 & -\sin t\theta_2 & \cdots & 0 & 0\\
+    0 & 0 & \sin t\theta_2 & \cos t\theta_2 & \cdots & 0 & 0\\
+    \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
+    0 & 0 & 0 & 0 & \cdots & \cos t\theta_{d/2} & -\sin t\theta_{d/2}\\
+    0 & 0 & 0 & 0 & \cdots & \sin t\theta_{d/2} & \cos t\theta_{d/2}
+    \end{pmatrix}
+    \begin{pmatrix}
+        x^{(1)}_t \\ x^{(2)}_t \\ x^{(3)}_t \\ x^{(4)}_t \\ \vdots \\ x^{(d-1)}_t \\ x^{(d)}_t 
+    \end{pmatrix}
+\end{align}
 
 
-In the rest of the code in the \texttt{src/submission/helper.py}, modify your model to support using either \texttt{CausalSelfAttention} or \texttt{CausalCrossAttention}. Add the ability to switch between these attention variants depending on whether ``vanilla'' (for causal self-attention) or ``perceiver'' (for the perceiver variant) is selected in the command line arguments (see the section marked \texttt{[part g]} in \texttt{src/submission/helper.py}). 
+Finally, instead of adding the positional embeddings to the input embeddings, RoPE is applied to the key and query vectors for each head in the attention block for all the Transformer layers.
+
+% \begin{subparts}
+
+% \subpart[2] 
+\begin{enumerate}[label=\roman*.]
+
+\item (2 points) Using the rotation interpretation, RoPE operation can be viewed as rotation of the complex number $x^{(1)}_t + i x^{(2)}_t$ by an angle $t\theta$. Recall that this corresponds to multiplication by $e^{it\theta} = \cos t\theta + i \sin t\theta$.
+
+For higher dimensional feature vectors, this interpretation allows us to compute Equation~\ref{eq:rope_matrix} more efficiently. Specifically, we can rewrite the RoPE operation as an element-wise multiplication (denoted by $\odot$) of two vectors as follows:
+
+\begin{align}\label{eq:rope_elementwise}
+    \begin{pmatrix}
+        \cos t\theta_1 + i\sin t\theta_1 \\
+        \cos t\theta_2 + i\sin t\theta_2 \\
+        \vdots \\
+        \cos t\theta_{d/2} + i\sin t\theta_{d/2}
+    \end{pmatrix}
+    \odot
+    \begin{pmatrix}
+        x^{(1)}_t + i x^{(2)}_t \\
+        x^{(3)}_t + i x^{(4)}_t \\
+        \vdots \\
+        x^{(d-1)}_t + i x^{(d)}_t
+    \end{pmatrix}
+\end{align}
+
+Show that the elements of the vector in Equation~\ref{eq:rope_matrix} can be obtained from Equation~\ref{eq:rope_elementwise}. Note that some additional operations like reshaping are necessary to make the two expressions equal but you do not need to provide a detailed derivation for full points. 
 
 
-Below are bash commands that your code should support in order to pretrain the model, finetune it, and make predictions on the dev and test sets.
-Note that the pretraining process will take approximately 2 hours.
+% \subpart[1]
+\item (2 point) \textbf{Relative Embeddings.} Now we will show that the dot product of the RoPE embeddings of two vectors at positions $t_1$ and $t_2$ depends on the relative position $t_1 - t_2$ only. 
 
-Your model should get at least 2\% accuracy on the dev set.
+For simiplicity, we will assume two dimensional feature vectors (eg. $[a, b]$) and work with their complex number representations (eg. $a + ib$).
+
+Show that $\langle \text{RoPE}(z_1, t_1), \text{RoPE}(z_2, t_2) \rangle = \langle \text{RoPE}(z_1, t_1 - t_2), \text{RoPE}(z_2, 0) \rangle$ where $\langle \cdot, \cdot \rangle$ denotes the dot product and $\text{RoPE}(z, t)$ is the RoPE embedding of vector $z$ at position $t$.
+
+(Hint: Dot product of vectors represented as complex numbers is given by $\langle z_1, z_2 \rangle = \Re(\overline{z_1} z_2)$. For a complex number $z = a + ib\ (a,b\in\R$), $\Re(z) = a$ indicates the real component of $z$ and $\bar{z} = a - ib$ is the complex conjugate of $z$.)
+
+\end{enumerate}
+
+\item \points{1h} \textbf{Write and try out a different kind of position embeddings (Budget about 1 hour for training)}\\
+
+In the provided code, RoPE is implemented using the functions \texttt{precompute\_rotary\_emb} and \texttt{apply\_rotary\_emb} in \texttt{src/submission/attention.py}. You need to implement these functions and the parts of code marked \texttt{[part h]} in \texttt{src/submission/attention.py} and \texttt{src/run.py} to use RoPE in the model.
+
+Train a model with RoPE on the span corruption task and finetune it on the birthplace prediction task. Specifically, you should be able to run the following four commands:
 
 \begin{lstlisting}[language=bash]
-        # Pretrain the model
-        ./run.sh perceiver_pretrain
-                
-        # Finetune the model
-        ./run.sh perceiver_finetune_with_pretrain
-                
-        # Evaluate on the dev set; write to disk
-        ./run.sh perceiver_eval_dev_with_pretrain
-                
-        # Evaluate on the test set; write to disk
-        ./run.sh perceiver_eval_test_with_pretrain
-        \end{lstlisting}
+    cd src
+
+    # Pretrain the model
+    ./run.sh rope_pretrain
+            
+    # Finetune the model
+    ./run.sh rope_finetune_with_pretrain
+            
+    # Evaluate on the dev set; write to disk
+    ./run.sh rope_eval_dev_with_pretrain
+            
+    # Evaluate on the test set; write to disk
+    ./run.sh rope_eval_test_with_pretrain
+    \end{lstlisting}
+
+We'll score your model as to whether it gets at least 20\% accuracy on the dev set.
 
 \end{enumerate}
 
@@ -267,11 +290,12 @@ Your model should get at least 2\% accuracy on the dev set.
 % \end{parts}
 
 
+\pagebreak
 
 \textbf{Deliverables}
 
 For this assignment, please submit the following files within the src/submission directory.
-Update files without directory structure.
+Update files \textbf{without directory structure}.
 
 This includes:
 
@@ -290,9 +314,15 @@ This includes:
         \item \texttt{src/submission/vanilla.finetune.params}
         \item \texttt{src/submission/vanilla.pretrain.dev.predictions}
         \item \texttt{src/submission/vanilla.pretrain.test.predictions}
-        \item \texttt{src/submission/perceiver.pretrain.params}
-        \item \texttt{src/submission/perceiver.finetune.params}
-        \item \texttt{src/submission/perceiver.pretrain.dev.predictions}
-        \item \texttt{src/submission/perceiver.pretrain.test.predictions}
+        \item \texttt{src/submission/rope.pretrain.params}
+        \item \texttt{src/submission/rope.finetune.params}
+        \item \texttt{src/submission/rope.pretrain.dev.predictions}
+        \item \texttt{src/submission/rope.pretrain.test.predictions}
 \end{enumerate}
 
+We provide a script \texttt{src/collect\_submission.sh} to collect these files and create a zip file for submission. You can run the script on Linux/Mac systems or use the \texttt{collect\_submission.bat} on Windows, then submit the zip file to the assignment.
+
+\begin{lstlisting}[language=bash]
+    cd src
+    bash ./collect_submission.sh
+\end{lstlisting}

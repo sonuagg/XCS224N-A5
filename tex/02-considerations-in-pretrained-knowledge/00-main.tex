@@ -41,7 +41,7 @@ Succinctly explain why the pretrained (vanilla) model was able to achieve a high
 \begin{answer}
 Pretraining, with some probability, masks out the name of a person while providing the birth place, or masks out the birth place while providing the name -- this teaches the model to associate the names with the birthplaces.
 At finetuning time, this information can be accessed, since it has been encoded in the parameters (the initialization.)
-Without pretraining, there's no way for the model to for the model to have any knowledge of the birth places of people that weren't in the finetuning training set, so it can't get above a simple heuristic baseline (like the London baseline.)
+Without pretraining, there's no way for the model to have any knowledge of the birth places of people that weren't in the finetuning training set, so it can't get above a simple heuristic baseline (like the London baseline.)
 \end{answer}
 
 % ISS
@@ -53,7 +53,7 @@ Consider the implications of this for user-facing systems that involve pretraine
 Come up with two reasons why this indeterminacy of model behavior may cause concern for such applications.
 
 \begin{answer}
-There is a large space of possible reasons indeterminacy could cause concern for user-facing applications. We deducted points if the two provided reasons were too similar, or if one followed directly from the other. For example, ``the user won't know when the system is wrong'' and ``the user will make incorrect decisions based on false information'' is really cause-and-effect rather than two distinct reasons for concern. Answers about general issues such as low accuracy were also not accepted.
+There is a large space of possible reasons indeterminacy could cause concern for user-facing applications. 
 Here are some possible answers:
 
 \begin{enumerate}

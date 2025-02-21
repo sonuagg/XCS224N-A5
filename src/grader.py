@@ -36,7 +36,7 @@ class sample_GPTConfig:
     embd_pdrop = 0.1
     resid_pdrop = 0.1
     attn_pdrop = 0.1
-    perceiver = False
+    rope = False
     bottleneck_dim = None
 
     def __init__(self, vocab_size, block_size, **kwargs):
@@ -225,26 +225,26 @@ class Test_1f(GradedTestCase):
         "./data/birth_test.tsv")
     self.assertGreaterEqual(n_correct / n_total, 0.09)
   
-class Test_1g(GradedTestCase):
+class Test_1h(GradedTestCase):
   def setUp(self):
     self.pretrain_dataset = submission.CharCorruptionDataset(PRETRAIN_TEXT, BLOCK_SIZE)
     self.mconf = submission.GPTConfig(self.pretrain_dataset.vocab_size, self.pretrain_dataset.block_size, n_layer=4, n_head=8, n_embd=256)
-    self.perceiver_model = submission.initialize_perceiver_model(self.mconf)
+    self.rope_model = submission.initialize_rope_model(self.mconf)
 
 
   @graded(is_hidden=True)
-  def test_1(self):
-    """1g-0-hidden:   test the dev score for perceiver attention with pretrain"""
+  def test_0(self):
+    """1h-0-hidden:   test the dev score for rope attention with pretrain"""
     n_correct, n_total = score_preds(
-        "./submission/perceiver.pretrain.dev.predictions",
+        "./submission/rope.pretrain.dev.predictions",
         "./data/birth_dev.tsv")
     self.assertGreaterEqual(n_correct / n_total, 0.022)
   
   @graded(is_hidden=True)
-  def test_2(self):
-    """1g-1-hidden:   test the test score for perceiver attention with pretrain"""
+  def test_1(self):
+    """1h-1-hidden:   test the test score for rope attention with pretrain"""
     n_correct, n_total = score_preds(
-        "./submission/perceiver.pretrain.test.predictions",
+        "./submission/rope.pretrain.test.predictions",
         "./data/birth_test.tsv")
     self.assertGreaterEqual(n_correct / n_total, 0.016)
   

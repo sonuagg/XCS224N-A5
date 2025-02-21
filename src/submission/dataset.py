@@ -99,7 +99,7 @@ to int(self.block_size*3/4) has a chance of being picked) for full credit.
     [prefix] [masked_content] [suffix]
 
   In other words, choose three strings prefix, masked_content and suffix
-    such that prefix + masked_content + suffix = [the original document].
+    such that prefix + masked_content + suffix = [the truncated document].
   The length of [masked_content] should be random, and 1/4 the length of the
     truncated document on average.
 
