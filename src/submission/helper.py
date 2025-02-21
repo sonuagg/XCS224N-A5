@@ -9,16 +9,16 @@ random.seed(0)
 def initialize_vanilla_model(mconf):
     attention_model = None
     ### TODO:
-    ### [part c]: Make some model here
+    ### [part d]: Make some model here
 
     ### START CODE HERE
     ### END CODE HERE
     return attention_model
 
-def initialize_perceiver_model(mconf, bottleneck_dim=32):
+def initialize_rope_model(mconf, bottleneck_dim=32):
     attention_model = None
     ### TODO
-    ### [part g]: Make some other model here
+    ### [part h]: Make some other model here
 
     ### START CODE HERE
     ### END CODE HERE
@@ -26,7 +26,7 @@ def initialize_perceiver_model(mconf, bottleneck_dim=32):
 
 def finetune(reading_params_path, finetune_corpus_path, pretrain_dataset, block_size, model, finetune_lr=6e-4, writer=None):
     ### TODO:
-    ### [part c] [part f]:
+    ### [part d] [part f]:
     ### - Given:
     ###     1. A finetuning corpus specified in finetune_corpus_path
     ###     2. A path reading_params_path containing pretrained model
@@ -91,7 +91,7 @@ def train(model, writing_params_path, trainer_obj):
     ### TODO:
     ### - Given:
     ###     An output path writing_params_path for the model parameters
-    ### [part c]:
+    ### [part d]:
     ###
     ### Note: trainer_obj is of type Trainer (see trainer.py for more details)
 
