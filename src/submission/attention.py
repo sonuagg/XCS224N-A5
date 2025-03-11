@@ -115,6 +115,7 @@ class CausalSelfAttention(nn.Module):
         v = self.value(x).view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
 
         if self.rope:
+            pass
             ### TODO:
             # [part h] Apply RoPE to the query and key.
             ### START CODE HERE
