@@ -19,7 +19,6 @@ Options:
     --eval_corpus_path=<file>               Path of the corpus to evaluate on
     --outputs_path=<file>                   File to output predictions
     --tb_expt_name=<str>                    debug string for tb log [default: run]
-    --bottleneck_dim=<n>                    bottleneck dim [default: 32]
     --pretrain_lr=<value>                   pretraining lr [default: 6e-3]
     --finetune_lr=<value>                   finetuning lr [default: 6e-4]
 """
@@ -55,8 +54,7 @@ def create_model(args, mconf):
     if args['--variant'] == 'vanilla':
         return initialize_vanilla_model(mconf)
     elif args['--variant'] == 'rope':
-        bottleneck_dim = int(args["--bottleneck_dim"])
-        return initialize_rope_model(mconf, bottleneck_dim)
+        return initialize_rope_model(mconf)
     else:
         print("Invalid --variant")
         assert False
@@ -128,11 +126,10 @@ def main():
     datetime_str = datetime.now().strftime("%Y%m%d-%H%M%S")
 
     # TensorBoard training log
-    writer = SummaryWriter(log_dir='expt/%s/%s_%s_%d_pt_lr_%f_ft_lr_%f_%s' % (
+    writer = SummaryWriter(log_dir='expt/%s/%s_%s_pt_lr_%f_ft_lr_%f_%s' % (
         args['--function'],
         args['--tb_expt_name'],
         args['--variant'],
-        int(args['--bottleneck_dim']),
         float(args['--pretrain_lr']),
         float(args['--finetune_lr']),
         datetime_str))
