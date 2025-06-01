@@ -28,7 +28,6 @@ class GPTConfig:
     resid_pdrop = 0.1
     attn_pdrop = 0.1
     rope = False
-    bottleneck_dim = None
 
     def __init__(self, vocab_size, block_size, **kwargs):
         self.vocab_size = vocab_size

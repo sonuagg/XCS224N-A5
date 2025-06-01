@@ -258,7 +258,7 @@ Show that $\langle \text{RoPE}(z_1, t_1), \text{RoPE}(z_2, t_2) \rangle = \langl
 
 \item \points{1h} \textbf{Write and try out a different kind of position embeddings (Budget about 1 hour for training)}\\
 
-In the provided code, RoPE is implemented using the functions \texttt{precompute\_rotary\_emb} and \texttt{apply\_rotary\_emb} in \texttt{src/submission/attention.py}. You need to implement these functions and the parts of code marked \texttt{[part h]} in \texttt{src/submission/attention.py} and \texttt{src/run.py} to use RoPE in the model.
+In the provided code, RoPE is implemented using the functions \texttt{precompute\_rotary\_emb} and \texttt{apply\_rotary\_emb} in \texttt{src/submission/attention.py}. You need to implement these functions and the parts of code marked \texttt{[part h]} in \texttt{src/submission/attention.py} and \texttt{src/helper.py} to use RoPE in the model.
 
 Train a model with RoPE on the span corruption task and finetune it on the birthplace prediction task. Specifically, you should be able to run the following four commands:
 

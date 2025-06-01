@@ -15,7 +15,7 @@ def initialize_vanilla_model(mconf):
     ### END CODE HERE
     return attention_model
 
-def initialize_rope_model(mconf, bottleneck_dim=32):
+def initialize_rope_model(mconf):
     attention_model = None
     ### TODO
     ### [part h]: Make some other model here
