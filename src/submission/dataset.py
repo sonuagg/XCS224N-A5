@@ -176,6 +176,51 @@ class CharCorruptionDataset(Dataset):
         ### [part e]: see spec above
 
         ### START CODE HERE
+        
+        # STEP 0. Retrieve document
+        document = self.data[idx]
+
+
+        # STEP 1. randomly truncate the document to length L, where 4 <= L <= int(self.block_size*3/4)
+
+        # first, ensure the document is at least 4 characters long (pad with spaces as needed)
+        if len(document) < 4:
+            document = document + (' ' * (4 - len(document)))
+
+        #max_context_size already set as needed
+        max_trunc_len = min(self.max_context_size, len(document)) 
+        trunc_len = random.randint(4, max_trunc_len) if max_trunc_len >= 4 else len(document)
+        truncated = document[:trunc_len]
+
+        # STEP 2. Split into [prefix] [masked_content] [suffix]
+        # Choose a random mask length with average ~ L/4 by sampling uniformly in [1, floor(L/2)]
+        L = len(truncated)
+        max_mask_len = max(1, L // 2)
+        mask_len = random.randint(1, max_mask_len)
+        start_idx = random.randint(0, L - mask_len)
+        prefix = truncated[:start_idx]
+        masked_content = truncated[start_idx:(start_idx + mask_len) ]
+        suffix = truncated[(start_idx + mask_len):]
+
+        # STEP 3 
+        # build masked string [prefix] MASK [suffix] MASK [masked_content] MASK [pads] to block size
+        masked_string = prefix + self.MASK_CHAR + suffix + self.MASK_CHAR + masked_content + self.MASK_CHAR
+
+        # pad or trim to block_size
+        if len(masked_string) < self.block_size:
+            masked_string = masked_string + self.PAD_CHAR * (self.block_size - len(masked_string)) #pad
+        else:
+            masked_string = masked_string[:self.block_size] #trim, keeping initial
+
+        # STEP 4. shift to create input/output pair
+        x_str = masked_string[:-1]
+        y_str = masked_string[1:]
+
+        # STEP 5.  long tensors
+        x = torch.tensor([self.stoi[c] for c in x_str], dtype=torch.long)
+        y = torch.tensor([self.stoi[c] for c in y_str], dtype=torch.long)
+        return x, y
+
         ### END CODE HERE
 
         raise NotImplementedError
