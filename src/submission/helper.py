@@ -12,6 +12,8 @@ def initialize_vanilla_model(mconf):
     ### [part d]: Make some model here
 
     ### START CODE HERE
+    # create model
+    attention_model = GPT(mconf)
     ### END CODE HERE
     return attention_model
 
@@ -60,6 +62,34 @@ def finetune(reading_params_path, finetune_corpus_path, pretrain_dataset, block_
     trainer_obj = None #Trainer object (see trainer.py for more details)
     tconf = None #TrainerConfig object (see trainer.py for more details)
     ### START CODE HERE
+    # Load pretrained weights if provided
+    if reading_params_path is not None:
+        state_dict = torch.load(reading_params_path, map_location=torch.device('cpu'), weights_only=True)
+        model.load_state_dict(state_dict)
+        max_epochs = 10
+    else:
+        max_epochs = 75
+
+    # Build finetune dataset from TSV (using pretrain_dataset for vocab)
+    with open(finetune_corpus_path, encoding='utf-8') as f:
+        finetune_data = f.read()
+    finetune_dataset = NameDataset(finetune_data, pretrain_dataset)
+
+    # Trainer configuration
+    tconf = TrainerConfig(
+        max_epochs=max_epochs,
+        batch_size=256,
+        learning_rate=finetune_lr,
+        lr_decay=True,
+        warmup_tokens=512*20,
+        final_tokens=200*len(pretrain_dataset)*block_size,
+        num_workers=0,
+        writer=writer,
+        ckpt_path=None,
+    )
+
+    # Initialize trainer (no separate test dataset supplied during finetune stage)
+    trainer_obj = Trainer(model, finetune_dataset, None, tconf)
     ### END CODE HERE
     return tconf, trainer_obj
 
@@ -96,5 +126,9 @@ def train(model, writing_params_path, trainer_obj):
     ### Note: trainer_obj is of type Trainer (see trainer.py for more details)
 
     ### START CODE HERE
+    trainer_obj.train()
+    # Save the trained weights
+    ckpt_model = trainer_obj.model.module if hasattr(trainer_obj.model, "module") else trainer_obj.model
+    torch.save(ckpt_model.state_dict(), writing_params_path)
     ### END CODE HERE
     return
